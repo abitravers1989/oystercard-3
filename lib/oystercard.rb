@@ -4,7 +4,7 @@ MIN_BAL = 1
 
 class Oystercard
   attr_reader :balance, :journeys
-  attr_accessor :entry_station, :trip_no
+  attr_accessor :journeys, :trip_no
 
   MAXIMUM_LIMIT = 90
   # DEFAULT_STATUS = false
@@ -30,7 +30,8 @@ class Oystercard
   def in_journey?
     return 'not in use' if @journeys == []
     return 'in use' if @journeys.last[:out] == "nil"
-    return 'not in use' if (@journeys.last[:in] == "nil" && @journeys.last[:out] == "nil") 
+    return 'not in use' if @journeys.last[:out] != nil
+    # @journeys.last[:out] == @name
   end
 
   def touch_in(station)
@@ -53,3 +54,4 @@ private
     @balance -= amount
   end
 end
+

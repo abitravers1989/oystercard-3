@@ -66,6 +66,7 @@ describe Oystercard do
   end
 
   it 'can deduct the balance when touching out' do
+    subject.top_up(5)
     station1 = Station.new("Paddington")
     station2 = Station.new("Aldgate")
     subject.touch_in(station1)
