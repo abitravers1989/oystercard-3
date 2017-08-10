@@ -36,17 +36,18 @@ class Oystercard
 
   def touch_in(station)
     @trip_no += 1
-    raise "Insufficient funds to touch in, balance must be more than #{MIN_BAL}" if @balance < MIN_BAL
+    raise "Insufficient funds to touch in, balance must be more than/
+    #{MIN_BAL}" if @balance < MIN_BAL
     # @in_use = true
     puts "Card touched in."
-    @journeys << {in: station.name, out: "nil"}
+    @journeys << { in: station.name, out: "nil" }
   end
 
   def touch_out(station)
     deduct(FARE_PER_TRIP)
     # @in_use = false
     puts "Card touched out. Remaining balance #{@balance}."
-    @journeys[trip_no-1][:out] = station.name
+    @journeys[trip_no - 1][:out] = station.name
   end
 
 private
@@ -54,4 +55,3 @@ private
     @balance -= amount
   end
 end
-
