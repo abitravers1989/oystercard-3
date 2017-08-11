@@ -47,14 +47,14 @@ describe Oystercard do
     # station = Station.new("Paddington")
     allow(station).to receive_messages(name: "Paddington", zone: 1)
     subject.touch_in(station)
-    expect(subject.journeys).to eq([{ in: "Paddington", zone: 1}])
+    expect(subject.journeys).to eq([{ in_station: "Paddington", out_station: nil}])
   end
 
-  it 'has an empty list of journeys by default' do 
+  it 'has an empty list of journeys by default' do
     expect(subject.journeys).to eq []
   end
 
-  context "is topped up and has touched in" do 
+  context "is topped up and has touched in" do
     before(:each) do
       subject.top_up(10)
       station1 = Station.new("Paddington", 1)
@@ -69,33 +69,34 @@ describe Oystercard do
     it 'changes its status to in use after touch in' do
       expect(subject.in_journey?).to eq 'in use'
     end
-  end
 
-  context "has 1 complete journey" do 
-    before(:each) do
-      subject.top_up(10)
+  context "has 1 complete journey" do
+
+    it 'will reduce the balance by a specified amount' do
       station1 = Station.new("Paddington", 1)
       station2 = Station.new("Bank", 1)
+      subject.top_up(10)
       subject.touch_in(station1)
-      subject.touch_out(station2)
-    end
-    
-    it 'will reduce the balance by a specified amount' do
-      expect(subject.balance).to eq 9
+      expect { subject.touch_out(station2) }.to change { subject.balance }.by(-1)
     end
 
-    it 'changes its status to not in use after touch out' do
-      expect(subject.in_journey?).to eq 'not in use'
-    end
+    it 'after touch out there is an out_station in the last hash of the @journeys array' do
+        subject.top_up(10)
+        station1 = Station.new("Paddington", 1)
+        station2 = Station.new("Bank", 1)
+        subject.touch_in(station1)
+        subject.touch_out(station2)
+        expect(subject.journeys.last).to_not eq nil
+      # expect(subject.in_journey?).to eq 'not in use'
+      # expect(subject.i)
+      # expect(journeys.last).t
+  end
 
-    # it 'records journeys' do
-    #   expect(subject.journeys).to eq([{ in: "Paddington", out: "Bank" }])
-    # end
 
     it 'creates one journey when touching in then out' do
       expect(subject.journeys.length).to eq subject.trip_no
     end
 
   end
-  
+end
 end
